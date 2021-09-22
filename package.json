@@ -1,0 +1,30 @@
+{
+  "name": "@fanswoo/package-manager",
+  "version": "1.0.0",
+  "description": "this package can manage package",
+  "scripts": {
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/dependence-clone.ts",
+    "build": "tsc --project ./",
+    "dependence-clone": "node ./dist/dependence-clone.js"
+  },
+  "bin": {
+    "dependence-clone": "./dist/dependence-clone.ts"
+  },
+  "devDependencies": {
+    "@fanswoo/workspace-environment": "github:fanswoo/workspace-environment#develop",
+    "@types/node": "^16.9.6",
+    "nodemon": "^2.0.12",
+    "process.argv": "^0.6.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fanswoo/package-manager.git"
+  },
+  "author": "fansWoo",
+  "bugs": {
+    "url": "https://github.com/fanswoo/package-manager/issues"
+  },
+  "homepage": "https://github.com/fanswoo/package-manager"
+}
