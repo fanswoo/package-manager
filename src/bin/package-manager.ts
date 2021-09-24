@@ -1,5 +1,6 @@
 #!/usr/bin/env ts-node
 
+import 'module-alias/register';
 import argv from 'process.argv';
 import DependenceClone from '@/commands/dependence-clone';
 

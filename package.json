@@ -5,19 +5,21 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "npm run build:live",
-    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -r tsconfig-paths/register -- ./src/bin/package-manager.ts",
+    "build:live": "nodemon --exec ts-node -r tsconfig-paths/register -- ./src/bin/package-manager.ts",
     "build": "tsc --project ./",
-    "package-manager": "node -r tsconfig-paths/register ./dist/bin/package-manager.js"
+    "package-manager": "node ./dist/bin/package-manager.js"
   },
   "bin": {
     "package-manager": "./dist/bin/package-manager.js"
   },
+  "dependencies": {
+    "module-alias": "^2.2.2"
+  },
   "devDependencies": {
     "@fanswoo/workspace-environment": "github:fanswoo/workspace-environment#develop",
     "@types/node": "^16.9.6",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.13",
     "process.argv": "^0.6.0",
-    "ts-node": "^10.2.1",
     "tsconfig-paths": "^3.11.0",
     "typescript": "^4.4.3"
   },
@@ -29,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/fanswoo/package-manager/issues"
   },
-  "homepage": "https://github.com/fanswoo/package-manager"
+  "homepage": "https://github.com/fanswoo/package-manager",
+  "_moduleAliases": {
+    "@": "./dist"
+  }
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import argv from 'process.argv';
-import DependenceClone from './commands/dependence-clone';
+import DependenceClone from '@/commands/dependence-clone';
 
 const processArgv = argv(process.argv.slice(2));
 
