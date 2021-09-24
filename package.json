@@ -2,10 +2,10 @@
   "name": "@fanswoo/package-manager",
   "version": "1.0.0",
   "description": "this package can manage package",
-  "main": "dist/main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "npm run build:live",
-    "build:live": "nodemon --exec ts-node -r tsconfig-paths/register -- ./src/bin/package-manager.ts",
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/package-manager.ts",
     "build": "tsc --project ./",
     "package-manager": "node ./dist/bin/package-manager.js"
   },
@@ -13,10 +13,16 @@
     "package-manager": "./dist/bin/package-manager.js"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
+    "clear": "^0.1.0",
+    "commander": "^8.2.0",
+    "figlet": "^1.5.2",
     "module-alias": "^2.2.2"
   },
   "devDependencies": {
     "@fanswoo/workspace-environment": "github:fanswoo/workspace-environment#develop",
+    "@types/clear": "^0.1.2",
+    "@types/figlet": "^1.5.4",
     "@types/node": "^16.9.6",
     "nodemon": "^2.0.13",
     "process.argv": "^0.6.0",

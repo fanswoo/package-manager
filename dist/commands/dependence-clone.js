@@ -1,19 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
-const process_argv_1 = (0, tslib_1.__importDefault)(require("process.argv"));
 const fs_1 = (0, tslib_1.__importDefault)(require("fs"));
 class DependenceClone {
-    constructor() {
-        const processArgv = (0, process_argv_1.default)(process.argv.slice(2));
-        const config = processArgv({
-            src: '../framework-core-front/',
-            dist: 'test',
-            name: 'test',
-        });
-        this.src = config.src;
-        this.dist = config.dist;
-        this.name = config.name;
+    constructor(arg) {
+        this.src = arg.src;
+        this.dist = arg.dist;
+        this.name = arg.name;
     }
     run() {
         const srcDependencies = JSON.parse(fs_1.default

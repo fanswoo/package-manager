@@ -1,22 +1,44 @@
 #!/usr/bin/env ts-node
 
 import 'module-alias/register';
-import argv from 'process.argv';
+import chalk from 'chalk';
+import clear from 'clear';
+import figlet from 'figlet';
+import commander from 'commander';
 import DependenceClone from '@/commands/dependence-clone';
 
-const processArgv = argv(process.argv.slice(2));
+clear();
+console.log(chalk.red(figlet.textSync('fanswoo-cli')));
 
-const config: {
-  '--': string;
-} = processArgv({
-  '--': 'dependence-clone',
-});
+commander
+  .version('1.0.0')
+  .description('manage package')
+  .requiredOption(
+    '-s, --src <source path>',
+    'enter source path',
+    '../framework-core-front',
+  )
+  .requiredOption(
+    '-d, --dist <distination path>',
+    'enter distination path',
+    'test',
+  )
+  .requiredOption(
+    '-n, --name <package name>',
+    'enter package name',
+    'name',
+  )
+  .parse(process.argv);
 
-const command: string = config['--'];
+const options = commander.opts();
 
-if (command === 'dependence-clone') {
-  const dependenceCloneInstance = new DependenceClone();
+if (options.src && options.dist && options.name) {
+  const dependenceCloneInstance = new DependenceClone({
+    src: options.src,
+    dist: options.dist,
+    name: options.name,
+  });
   dependenceCloneInstance.run();
 } else {
-  console.warn('you have to provider command name');
+  commander.outputHelp();
 }

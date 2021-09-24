@@ -1,4 +1,3 @@
-import argv from 'process.argv';
 import fs from 'fs';
 
 export default class DependenceClone {
@@ -8,22 +7,10 @@ export default class DependenceClone {
 
   name!: string; // 目標套件名稱
 
-  constructor() {
-    const processArgv = argv(process.argv.slice(2));
-
-    const config: {
-      src: string;
-      dist: string;
-      name: string;
-    } = processArgv({
-      src: '../framework-core-front/',
-      dist: 'test',
-      name: 'test',
-    });
-
-    this.src = config.src;
-    this.dist = config.dist;
-    this.name = config.name;
+  constructor(arg: { src: string; dist: string; name: string }) {
+    this.src = arg.src;
+    this.dist = arg.dist;
+    this.name = arg.name;
   }
 
   run() {

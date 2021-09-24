@@ -15,6 +15,10 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": ".",
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types",
+    ],
     "paths": {
       "@/*": [
         "src/*"
@@ -24,6 +28,9 @@
       // Transform paths in output .js files
       { "transform": "typescript-transform-paths" },
     ]
+  },
+  "ts-node": {
+    "files": true
   },
   "include": [
     "./src/**/*",

@@ -1,19 +1,31 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 require("module-alias/register");
-const process_argv_1 = (0, tslib_1.__importDefault)(require("process.argv"));
+const chalk_1 = (0, tslib_1.__importDefault)(require("chalk"));
+const clear_1 = (0, tslib_1.__importDefault)(require("clear"));
+const figlet_1 = (0, tslib_1.__importDefault)(require("figlet"));
+const commander_1 = (0, tslib_1.__importDefault)(require("commander"));
 const dependence_clone_1 = (0, tslib_1.__importDefault)(require("@/commands/dependence-clone"));
-const processArgv = (0, process_argv_1.default)(process.argv.slice(2));
-const config = processArgv({
-    '--': 'dependence-clone',
-});
-const command = config['--'];
-if (command === 'dependence-clone') {
-    const dependenceCloneInstance = new dependence_clone_1.default();
+(0, clear_1.default)();
+console.log(chalk_1.default.red(figlet_1.default.textSync('fanswoo', { horizontalLayout: 'full' })));
+commander_1.default
+    .version('1.0.0')
+    .description('manage package')
+    .requiredOption('-s, --src <source path>', 'enter source path')
+    .requiredOption('-d, --dist <distination path>', 'enter distination path')
+    .requiredOption('-n, --name <package name>', 'enter package name')
+    .parse(process.argv);
+const options = commander_1.default.opts();
+if (options.src && options.dist && options.name) {
+    const dependenceCloneInstance = new dependence_clone_1.default({
+        src: options.src,
+        dist: options.dist,
+        name: options.name,
+    });
     dependenceCloneInstance.run();
 }
 else {
-    console.warn('you have to provider command name');
+    commander_1.default.outputHelp();
 }
