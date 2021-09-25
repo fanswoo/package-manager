@@ -1,71 +1,88 @@
 module.exports = {
-  platforms: {
-    composer: {
-      packages: {
-        'fanswoo/framework-core': {
+  platforms: [
+    {
+      name: 'composer',
+      packages: [
+        {
+          name: 'fanswoo/framework-core',
           dev: false,
-          source: {
-            path: {
+          sources: [
+            {
+              source: 'path',
               path: '../framework-core',
             },
-            github: {
+            {
+              source: 'github',
               name: 'fanswoo/framework-core',
               branch: 'develop',
             },
-          },
+          ],
         },
-      },
+      ],
     },
-    npm: {
-      'dependence-namespace': '@fanswoo-dependence',
-      'dependence-dist-directory': 'storage/framework/npm-dependence',
-      packages: {
-        '@fanswoo/core': {
+    {
+      name: 'npm',
+      dependenceNamespace: '@fanswoo-dependence',
+      dependenceDistDirectory: 'storage/framework/npm-dependence',
+      packages: [
+        {
+          name: '@fanswoo/core',
           dev: false,
-          source: {
-            github: {
+          sources: [
+            {
+              source: 'github',
               name: 'fanswoo/framework-core-front',
               branch: 'develop',
             },
-            path: {
+            {
+              source: 'path',
               path: '../framework-core-front',
             },
-            packagist: {
+            {
+              source: 'packagist',
               version: '^1.0',
             },
-          },
+          ],
         },
-        '@fanswoo/mix-manager': {
+        {
+          name: '@fanswoo/mix-manager',
           dev: true,
-          source: {
-            github: {
+          sources: [
+            {
+              source: 'github',
               name: 'fanswoo/mix-manager',
               branch: 'develop',
             },
-            path: {
+            {
+              source: 'path',
               path: '../mix-manager',
             },
-            packagist: {
+            {
+              source: 'packagist',
               version: '^1.0',
             },
-          },
+          ],
         },
-        '@fanswoo/workspace-environment': {
+        {
+          name: '@fanswoo/workspace-environment',
           dev: true,
-          source: {
-            github: {
+          sources: [
+            {
+              source: 'github',
               name: 'fanswoo/workspace-environment',
               branch: 'develop',
             },
-            path: {
+            {
+              source: 'path',
               path: '../workspace-environment',
             },
-            packagist: {
+            {
+              source: 'packagist',
               version: '^1.0',
             },
-          },
+          ],
         },
-      },
+      ],
     },
-  },
+  ],
 };
