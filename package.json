@@ -4,13 +4,17 @@
   "description": "this package can manage package",
   "main": "src/main.js",
   "scripts": {
-    "start": "npm run build:live",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/package-manager.ts",
+    "start": "npm run watch",
+    "watch": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/dependence-clone.ts",
     "build": "tsc --project ./",
-    "package-manager": "node ./dist/bin/package-manager.js"
+    "dependence-clone": "node ./dist/bin/dependence-clone.js",
+    "dependence-remove": "node ./dist/bin/dependence-remove.js",
+    "package-source": "node ./dist/bin/package-source.js"
   },
   "bin": {
-    "package-manager": "./dist/bin/package-manager.js"
+    "dependence-clone": "./dist/bin/dependence-clone.js",
+    "dependence-remove": "./dist/bin/dependence-remove.js",
+    "package-source": "./dist/bin/package-source.js"
   },
   "dependencies": {
     "chalk": "^4.1.2",

@@ -25,7 +25,6 @@
       ],
     },
     "plugins": [
-      // Transform paths in output .js files
       { "transform": "typescript-transform-paths" },
     ]
   },
