@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
 import commander from 'commander';
-import cliTable from 'cli-table3';
+import CliTable3 from 'cli-table3';
 import PackageSource from '@/commands/package-source';
 import PackageUtil from '@/utils/package-util';
 import ComposerUtil from '@/utils/composer-util';
@@ -32,10 +32,12 @@ if (!options.platform || !options.package || !options.source) {
 console.log('目前的套件來源位置：');
 
 const packageList = PackageUtil.getPackageList();
-cliTable.table(
+CliTable3.head(
   ['platform', 'package name', 'source type'],
   packageList,
 );
+CliTable3.push(packageList);
+console.log(CliTable3.toString());
 
 let { platform, packageName, source } = options;
 
@@ -46,63 +48,52 @@ platform = commander.choice(
 );
 
 const config = PackageUtil.getConfig();
-const repositorieNames = Object.keys(
-  config.packages.options.platform,
-);
+const repositoriePlatforms = Object.keys(config.platforms);
 
 packageName = commander.choice(
-  '請輸入 {platform} 需要變更套件來源的套件名稱：',
-  repositorieNames,
+  `請輸入 ${platform} 需要變更套件來源的套件名稱：`,
+  repositoriePlatforms,
   0,
 );
 
-const repositorieSourceTypes = Object.keys(
-  config.packages[platform][packageName].source,
-);
+let repositorieSources = config.platforms
+  .find((item) => platform === item.name)!
+  .packages.find((item) => packageName === item.name)!.sources;
 
 switch (platform) {
-  case 'composer':
+  case 'composer': {
     const currentPackageType =
       ComposerUtil.getPackageType(packageName);
+
+    console.log(
+      `準備替換 ${platform} 套件管理平台中的 ${packageName} 套件來源，目前的套件來源是 "${currentPackageType}"`,
+    );
+
+    repositorieSources = repositorieSources.filter(
+      (item) => item.source !== currentPackageType,
+    );
+    break;
+  }
+  case 'npm': {
+    const currentPackageType = NpmUtil.getPackageType(packageName);
 
     commander.line(
       `準備替換 ${platform} 套件管理平台中的 ${packageName} 套件來源，目前的套件來源是 "${currentPackageType}"`,
     );
 
-    if (
-      ($key = array_search(
-        currentPackageType,
-        repositorieSourceTypes,
-      )) !== false
-    ) {
-      unset(repositorieSourceTypes[$key]);
-      repositorieSourceTypes = array_values(repositorieSourceTypes);
-    }
-    break;
-  case 'npm':
-    const currentPackageType = NpmUtil.getPackageType(packageName);
-
-    commander.line(
-      '<fg=magenta>準備替換 {platform} 套件管理平台中的 {packageName} 套件來源，目前的套件來源是 "{currentPackageType}"</>',
+    repositorieSources = repositorieSources.filter(
+      (item) => item.source !== currentPackageType,
     );
 
-    if (
-      ($key = array_search(
-        currentPackageType,
-        repositorieSourceTypes,
-      )) !== false
-    ) {
-      unset(repositorieSourceTypes[$key]);
-      repositorieSourceTypes = array_values(repositorieSourceTypes);
-    }
     break;
+  }
   default:
     break;
 }
 
 source = commander.choice(
   `請輸入 ${platform} 套件管理平台中的 ${packageName} 套件應改為哪一種套件來源：`,
-  repositorieSourceTypes,
+  repositorieSources,
   0,
 );
 
@@ -113,12 +104,12 @@ const repositoryTransferor = new PackageSource(
 );
 
 if (repositoryTransferor.isPackageTypeEqual()) {
-  commander.error("you can't change package to the same type.");
+  console.log("you can't change package to the same type.");
   process.exit();
 }
 
 repositoryTransferor.changeType();
 
-commander.info(
-  '成功將 {platform} 套件管理平台內的 {package} 套件來源變更為 "{source}"',
+console.log(
+  `成功將 ${platform} 套件管理平台內的 ${packageName} 套件來源變更為 "${source}"`,
 );

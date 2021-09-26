@@ -7,3 +7,8 @@ declare module 'commander' {
   const classes: any;
   export default classes;
 }
+
+declare module 'cli-table3' {
+  const classes: any;
+  export default classes;
+}

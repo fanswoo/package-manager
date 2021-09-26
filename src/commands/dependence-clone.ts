@@ -27,7 +27,7 @@ export default class DependenceClone {
       name: this.name,
       dependencies: srcDependencies,
     };
-    console.log(`${process.cwd()}/${this.dist}`);
+
     if (!fs.existsSync(`${process.cwd()}/${this.dist}`)) {
       fs.mkdirSync(`${process.cwd()}/${this.dist}`, {
         recursive: true,
@@ -39,6 +39,6 @@ export default class DependenceClone {
       JSON.stringify(distPackage, null, 2),
     );
 
-    // console.log(distPackage);
+    console.log('distPackage2');
   }
 }

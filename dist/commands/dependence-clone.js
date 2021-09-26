@@ -16,14 +16,13 @@ class DependenceClone {
             name: this.name,
             dependencies: srcDependencies,
         };
-        console.log(`${process.cwd()}/${this.dist}`);
         if (!fs_1.default.existsSync(`${process.cwd()}/${this.dist}`)) {
             fs_1.default.mkdirSync(`${process.cwd()}/${this.dist}`, {
                 recursive: true,
             });
         }
         fs_1.default.writeFileSync(`${process.cwd()}/${this.dist}/package.json`, JSON.stringify(distPackage, null, 2));
-        // console.log(distPackage);
+        console.log('distPackage2');
     }
 }
 exports.default = DependenceClone;

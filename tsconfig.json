@@ -18,15 +18,13 @@
     "typeRoots": [
       "./src/types",
       "./node_modules/@types",
+      "./node_modules/cli-table3",
     ],
     "paths": {
       "@/*": [
         "src/*"
       ],
-    },
-    "plugins": [
-      { "transform": "typescript-transform-paths" },
-    ]
+    }
   },
   "ts-node": {
     "files": true
