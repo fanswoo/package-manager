@@ -12,7 +12,7 @@ class DependenceClone {
     run() {
         this.buildDependencePackage();
         this.installDependencePackage();
-        console.log('execution succeed');
+        console.log('%c execution succeed', 'color: green;');
     }
     buildDependencePackage() {
         const srcDependencies = JSON.parse(fs_1.default
@@ -31,7 +31,7 @@ class DependenceClone {
     }
     installDependencePackage() {
         (0, child_process_1.execSync)(`npm install --save-dev file:${this.dist}`).toString();
-        console.log(this.dist);
     }
 }
 exports.default = DependenceClone;
+//# sourceMappingURL=dependence-clone.js.map

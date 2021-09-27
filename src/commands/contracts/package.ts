@@ -5,7 +5,7 @@ export interface INpmPackageLockName {
 export interface IComposerPackageLockName {
   type: string;
   url: string;
-  dist: {
+  dist?: {
     type: string;
   };
 }

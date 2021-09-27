@@ -7,19 +7,26 @@ class ComposerUtil {
     static getPackageList() {
         const packageExec = (0, child_process_1.execSync)('composer config repositories').toString();
         const allPackageNames = JSON.parse(packageExec);
-        const packageNames = package_util_1.default.getConfig().platforms.filter((item) => item.name === 'composer');
+        const packages = package_util_1.default.getConfig().platforms.filter((item) => item.name === 'composer');
         const outputPackage = [];
-        packageNames.forEach((packageRepository) => {
-            outputPackage.push(ComposerUtil.repositoryToSourceType(allPackageNames[packageRepository.name]));
+        packages
+            .find((item) => item.name === 'composer')
+            .packages.forEach((packageSource) => {
+            outputPackage.push([
+                'composer',
+                packageSource.name,
+                ComposerUtil.repositoryToSourceType(allPackageNames[packageSource.name]),
+            ]);
         });
-        return JSON.parse(packageExec);
+        return outputPackage;
     }
-    static repositoryToSourceType(packageRepository) {
-        if (packageRepository.type === 'git' &&
-            packageRepository.url.substr(0, 15) === 'git@github.com:') {
-            return 'github';
+    static repositoryToSourceType(packageSource) {
+        if (packageSource.type === 'git') {
+            if (packageSource.url.substr(0, 15) === 'git@github.com:') {
+                return 'github';
+            }
         }
-        return packageRepository.type;
+        return packageSource.type;
     }
     static getPackageType(inputPackage) {
         const packageName = (0, child_process_1.execSync)(`composer config repositories.${inputPackage}`).toString();
@@ -30,10 +37,10 @@ class ComposerUtil {
         const composer = JSON.parse(
         // eslint-disable-next-line import/no-dynamic-require, global-require
         require(`${process.cwd()}/composer.lock`));
-        composer.packages.forEach((packageRepository) => {
-            if (packageRepository.dist &&
-                packageRepository.dist.type &&
-                packageRepository.dist.type === 'path') {
+        composer.packages.forEach((packageSource) => {
+            if (packageSource.dist &&
+                packageSource.dist.type &&
+                packageSource.dist.type === 'path') {
                 return true;
             }
             return false;
@@ -69,3 +76,4 @@ class ComposerUtil {
     }
 }
 exports.default = ComposerUtil;
+//# sourceMappingURL=composer-util.js.map

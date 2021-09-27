@@ -3,6 +3,9 @@ import PackageUtil from '@/utils/package-util';
 import {
   IPackageRepository,
   IComposerPackageLockName,
+  // IPackagistSource,
+  // IPathSource,
+  // IGithubSource,
 } from '@/commands/contracts/package';
 
 export default class ComposerUtil {
@@ -12,34 +15,36 @@ export default class ComposerUtil {
     ).toString();
 
     const allPackageNames = JSON.parse(packageExec);
-
-    const packageNames = PackageUtil.getConfig().platforms.filter(
+    const packages = PackageUtil.getConfig().platforms.filter(
       (item) => item.name === 'composer',
     );
 
-    const outputPackage = [];
-    packageNames.forEach((packageRepository) => {
-      outputPackage.push(
-        ComposerUtil.repositoryToSourceType(
-          allPackageNames[packageRepository.name],
-        ),
-      );
-    });
+    const outputPackage: any[] = [];
+    packages
+      .find((item) => item.name === 'composer')!
+      .packages.forEach((packageSource) => {
+        outputPackage.push([
+          'composer',
+          packageSource.name,
+          ComposerUtil.repositoryToSourceType(
+            allPackageNames[packageSource.name],
+          ),
+        ]);
+      });
 
-    return JSON.parse(packageExec);
+    return outputPackage;
   }
 
   static repositoryToSourceType(
-    packageRepository: IComposerPackageLockName,
+    packageSource: IComposerPackageLockName,
   ) {
-    if (
-      packageRepository.type === 'git' &&
-      packageRepository.url.substr(0, 15) === 'git@github.com:'
-    ) {
-      return 'github';
+    if (packageSource.type === 'git') {
+      if (packageSource.url!.substr(0, 15) === 'git@github.com:') {
+        return 'github';
+      }
     }
 
-    return packageRepository.type;
+    return packageSource.type;
   }
 
   static getPackageType(inputPackage: string): string {
@@ -58,11 +63,11 @@ export default class ComposerUtil {
     );
 
     composer.packages.forEach(
-      (packageRepository: IComposerPackageLockName) => {
+      (packageSource: IComposerPackageLockName) => {
         if (
-          packageRepository.dist &&
-          packageRepository.dist.type &&
-          packageRepository.dist.type === 'path'
+          packageSource.dist &&
+          packageSource.dist.type &&
+          packageSource.dist.type === 'path'
         ) {
           return true;
         }

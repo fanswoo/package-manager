@@ -4,7 +4,7 @@
   "description": "this package can manage package",
   "main": "src/main.js",
   "scripts": {
-    "start": "npm run watch:dependence-remove",
+    "start": "npm run watch:package-source",
     "watch:dependence-clone": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/dependence-clone.ts --disable-module-alias",
     "watch:dependence-remove": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/dependence-remove.ts  --disable-module-alias",
     "watch:package-source": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/package-source.ts --disable-module-alias",
@@ -24,12 +24,14 @@
     "commander": "^8.2.0",
     "dotenv": "^10.0.0",
     "figlet": "^1.5.2",
+    "inquirer": "^8.1.5",
     "module-alias": "^2.2.2"
   },
   "devDependencies": {
     "@fanswoo/workspace-environment": "github:fanswoo/workspace-environment#develop",
     "@types/clear": "^0.1.2",
     "@types/figlet": "^1.5.4",
+    "@types/inquirer": "^8.1.2",
     "@types/node": "^16.9.6",
     "nodemon": "^2.0.13",
     "process.argv": "^0.6.0",

@@ -11,7 +11,7 @@ class DependenceRemove {
     run() {
         this.uninstallDependencePackage();
         this.removeDependencePackage();
-        console.log('execution succeed');
+        console.log('%c execution succeed', 'color: green;');
     }
     removeDependencePackage() {
         fs_1.default.rmdirSync(`${process.cwd()}/${this.dist}`, {
@@ -24,3 +24,4 @@ class DependenceRemove {
     }
 }
 exports.default = DependenceRemove;
+//# sourceMappingURL=dependence-remove.js.map

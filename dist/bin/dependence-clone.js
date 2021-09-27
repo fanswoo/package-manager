@@ -37,3 +37,4 @@ class CommandLine {
 }
 const commandLine = new CommandLine();
 commandLine.run();
+//# sourceMappingURL=dependence-clone.js.map

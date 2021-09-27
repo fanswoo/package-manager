@@ -17,13 +17,17 @@ export default class NpmUtil {
     );
 
     const outputPackage: any[] = [];
-    packages.forEach((packageRepository) => {
-      outputPackage.push(
-        NpmUtil.resolvedToSourceType(
-          allPackages.dependencies[packageRepository.name].resolved,
-        ),
-      );
-    });
+    packages
+      .find((item) => item.name === 'npm')!
+      .packages.forEach((packageRepository) => {
+        outputPackage.push([
+          'npm',
+          packageRepository.name,
+          NpmUtil.resolvedToSourceType(
+            allPackages.dependencies[packageRepository.name].resolved,
+          ),
+        ]);
+      });
 
     return outputPackage;
   }

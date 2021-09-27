@@ -12,8 +12,14 @@ class NpmUtil {
         const allPackages = NpmUtil.getPackages();
         const packages = package_util_1.default.getConfig().platforms.filter((item) => item.name === 'npm');
         const outputPackage = [];
-        packages.forEach((packageRepository) => {
-            outputPackage.push(NpmUtil.resolvedToSourceType(allPackages.dependencies[packageRepository.name].resolved));
+        packages
+            .find((item) => item.name === 'npm')
+            .packages.forEach((packageRepository) => {
+            outputPackage.push([
+                'npm',
+                packageRepository.name,
+                NpmUtil.resolvedToSourceType(allPackages.dependencies[packageRepository.name].resolved),
+            ]);
         });
         return outputPackage;
     }
@@ -58,3 +64,4 @@ class NpmUtil {
     }
 }
 exports.default = NpmUtil;
+//# sourceMappingURL=npm-util.js.map

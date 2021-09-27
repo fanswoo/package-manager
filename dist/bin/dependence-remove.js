@@ -35,3 +35,4 @@ class CommandLine {
 }
 const commandLine = new CommandLine();
 commandLine.run();
+//# sourceMappingURL=dependence-remove.js.map

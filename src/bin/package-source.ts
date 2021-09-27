@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-import 'module-alias/register';
+import '../core/bootstrap';
 import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
 import { Command } from 'commander';
 import CliTable3 from 'cli-table3';
+import inquirer from 'inquirer';
 import PackageSource from '@/commands/package-source';
 import PackageUtil from '@/utils/package-util';
 import ComposerUtil from '@/utils/composer-util';
@@ -27,108 +28,163 @@ class CommandLine {
     this.commander = new Command();
     this.commander
       .description('manage package')
-      .requiredOption('-p, --platform <name>', 'platform')
-      .requiredOption('-pkg, --package-name <name>', 'package')
-      .requiredOption('-s, --source <source type>', 'source')
+      .option('-p, --platform <name>', 'platform')
+      .option('-pkg, --package-name <name>', 'package')
+      .option('-s, --source <source type>', 'source')
       .parse();
 
     this.options = this.commander.opts();
   }
 
-  run() {
-    if (
-      !this.options.platform ||
-      !this.options.packageName ||
-      !this.options.source
-    ) {
-      this.commander.outputHelp();
-      process.exit();
-    }
-
-    console.log('目前的套件來源位置：');
+  static showTable() {
+    console.log('\n 目前的套件來源位置：');
 
     const packageList = PackageUtil.getPackageList();
-    CliTable3.head(
-      ['platform', 'package name', 'source type'],
-      packageList,
-    );
-    CliTable3.push(packageList);
-    console.log(CliTable3.toString());
 
-    let { platform, packageName, source } = this.options;
+    const table = new CliTable3({
+      head: ['platform', 'package name', 'source type'],
+      // colWidths: [100, 200],
+    });
 
-    platform = this.commander.choice(
-      '請輸入需要變更套件來源的套件管理平台名稱：',
-      ['composer', 'npm'],
-      0,
-    );
+    packageList.forEach((item) => {
+      table.push(item);
+    });
+
+    console.log(table.toString());
+    console.log('\n');
+  }
+
+  async run() {
+    if (
+      this.options.platform &&
+      this.options.packageName &&
+      this.options.source
+    ) {
+      this.callPackageSource();
+    }
+
+    this.commander.outputHelp();
+
+    CommandLine.showTable();
+
+    let answer = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'platform',
+        message: '請輸入需要變更套件來源的套件管理平台名稱：',
+        choices: ['composer', 'npm'],
+      },
+    ]);
+    this.options.platform = answer.platform;
 
     const config = PackageUtil.getConfig();
-    const repositoriePlatforms = Object.keys(config.platforms);
+    const packageNames: any[] = [];
+    config.platforms
+      .find((item) => this.options.platform === item.name)!
+      .packages.forEach((item) => {
+        packageNames.push(item.name);
+      });
 
-    packageName = this.commander.choice(
-      `請輸入 ${platform} 需要變更套件來源的套件名稱：`,
-      repositoriePlatforms,
-      0,
-    );
+    answer = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'packageName',
+        message: `請輸入 ${this.options.platform} 需要變更套件來源的套件名稱：`,
+        choices: packageNames,
+      },
+    ]);
+    this.options.packageName = answer.packageName;
 
-    let repositorieSources = config.platforms
-      .find((item) => platform === item.name)!
-      .packages.find((item) => packageName === item.name)!.sources;
+    const repositorieSources = config.platforms
+      .find((item) => this.options.platform === item.name)!
+      .packages.find(
+        (item) => this.options.packageName === item.name,
+      )!.sources;
 
-    switch (platform) {
+    let currentPackageType = '';
+    const sourceChoices: string[] = [];
+    switch (this.options.platform) {
       case 'composer': {
-        const currentPackageType =
-          ComposerUtil.getPackageType(packageName);
-
-        console.log(
-          `準備替換 ${platform} 套件管理平台中的 ${packageName} 套件來源，目前的套件來源是 "${currentPackageType}"`,
+        currentPackageType = ComposerUtil.getPackageType(
+          this.options.packageName,
         );
 
-        repositorieSources = repositorieSources.filter(
-          (item) => item.source !== currentPackageType,
-        );
+        repositorieSources
+          .filter((item) => item.source !== currentPackageType)
+          .forEach((item) => {
+            sourceChoices.push(item.source);
+          });
+
         break;
       }
       case 'npm': {
-        const currentPackageType =
-          NpmUtil.getPackageType(packageName);
-
-        this.commander.line(
-          `準備替換 ${platform} 套件管理平台中的 ${packageName} 套件來源，目前的套件來源是 "${currentPackageType}"`,
+        currentPackageType = NpmUtil.getPackageType(
+          this.options.packageName,
         );
 
-        repositorieSources = repositorieSources.filter(
-          (item) => item.source !== currentPackageType,
-        );
+        repositorieSources
+          .filter((item) => item.source !== currentPackageType)
+          .forEach((item) => {
+            sourceChoices.push(item.source);
+          });
 
         break;
       }
-      default:
-        break;
+      default: {
+        throw new Error('必須選擇正確的套件');
+      }
     }
 
-    source = this.commander.choice(
-      `請輸入 ${platform} 套件管理平台中的 ${packageName} 套件應改為哪一種套件來源：`,
-      repositorieSources,
-      0,
+    if (sourceChoices.length > 1) {
+      answer = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'source',
+          message: '請輸入應改為哪一種套件來源：',
+          choices: sourceChoices,
+        },
+      ]);
+      this.options.source = answer.source;
+    } else {
+      answer = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'source',
+          message: `是否將套件來源改為：${currentPackageType}`,
+          default: false,
+        },
+      ]);
+
+      if (answer.source) {
+        this.options.source = currentPackageType;
+      } else {
+        console.log('%c cancel this command.', 'color: yellow');
+        process.exit();
+      }
+    }
+
+    console.log(this.options);
+    process.exit();
+
+    this.callPackageSource();
+  }
+
+  callPackageSource() {
+    const packageSource = new PackageSource(
+      this.options.platform,
+      this.options.packageName,
+      this.options.source,
     );
 
-    const repositoryTransferor = new PackageSource(
-      platform,
-      packageName,
-      source,
-    );
-
-    if (repositoryTransferor.isPackageTypeEqual()) {
+    if (packageSource.isPackageTypeEqual()) {
       console.log("you can't change package to the same type.");
       process.exit();
     }
 
-    repositoryTransferor.changeType();
+    packageSource.changeType();
 
     console.log(
-      `成功將 ${platform} 套件管理平台內的 ${packageName} 套件來源變更為 "${source}"`,
+      `成功將 ${this.options.platform} 套件管理平台內的 ${this.options.packageName} 套件來源變更為 "${this.options.source}"`,
     );
   }
 }
