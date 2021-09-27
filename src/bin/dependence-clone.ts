@@ -1,44 +1,51 @@
 #!/usr/bin/env node
 
-import 'module-alias/register';
+import '../core/bootstrap';
 import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
-import commander from 'commander';
+import { Command } from 'commander';
 import DependenceClone from '@/commands/dependence-clone';
 
-clear();
-console.log(chalk.red(figlet.textSync('fanswoo-cli')));
+class CommandLine {
+  protected options: { src: string; dist: string; name: string };
 
-commander
-  .version('1.0.0')
-  .description('manage package')
-  .requiredOption(
-    '-s, --src <source path>',
-    'enter source path',
-    '../framework-core-front',
-  )
-  .requiredOption(
-    '-d, --dist <distination path>',
-    'enter distination path',
-    'test',
-  )
-  .requiredOption(
-    '-n, --name <package name>',
-    'enter package name',
-    'name',
-  )
-  .parse(process.argv);
+  protected commander: any;
 
-const options = commander.opts();
+  constructor() {
+    this.commander = new Command();
+    this.commander
+      .description('create dependence package')
+      .requiredOption('-s, --src <source path>', 'input source path')
+      .requiredOption(
+        '-d, --dist <distination path>',
+        'input distination path',
+      )
+      .requiredOption(
+        '-n, --name <package name>',
+        'input package name',
+      )
+      .parse();
 
-if (options.src && options.dist && options.name) {
-  const dependenceCloneInstance = new DependenceClone({
-    src: options.src,
-    dist: options.dist,
-    name: options.name,
-  });
-  dependenceCloneInstance.run();
-} else {
-  commander.outputHelp();
+    this.options = this.commander.opts();
+  }
+
+  run() {
+    clear();
+    console.log(chalk.red(figlet.textSync('fanswoo-cli')));
+
+    if (this.options.src && this.options.dist && this.options.name) {
+      const dependenceClone = new DependenceClone({
+        src: this.options.src,
+        dist: this.options.dist,
+        name: this.options.name,
+      });
+      dependenceClone.run();
+    } else {
+      this.commander.outputHelp();
+    }
+  }
 }
+
+const commandLine = new CommandLine();
+commandLine.run();

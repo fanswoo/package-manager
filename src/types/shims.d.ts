@@ -3,10 +3,10 @@
 /* eslint-disable no-var */
 /* eslint-disable no-unused-vars */
 
-declare module 'commander' {
-  const classes: any;
-  export default classes;
-}
+// declare module 'commander' {
+//   const classes: any;
+//   export default classes;
+// }
 
 declare module 'cli-table3' {
   const classes: any;

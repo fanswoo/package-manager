@@ -4,8 +4,10 @@
   "description": "this package can manage package",
   "main": "src/main.js",
   "scripts": {
-    "start": "npm run watch",
-    "watch": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/dependence-clone.ts",
+    "start": "npm run watch:dependence-remove",
+    "watch:dependence-clone": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/dependence-clone.ts --disable-module-alias",
+    "watch:dependence-remove": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/dependence-remove.ts  --disable-module-alias",
+    "watch:package-source": "nodemon --watch 'src/**/*.ts' --exec ts-node -r tsconfig-paths/register -- ./src/bin/package-source.ts --disable-module-alias",
     "build": "tsc --project ./",
     "dependence-clone": "node ./dist/bin/dependence-clone.js",
     "dependence-remove": "node ./dist/bin/dependence-remove.js",
@@ -20,6 +22,7 @@
     "chalk": "^4.1.2",
     "clear": "^0.1.0",
     "commander": "^8.2.0",
+    "dotenv": "^10.0.0",
     "figlet": "^1.5.2",
     "module-alias": "^2.2.2"
   },

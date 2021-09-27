@@ -16,9 +16,8 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "typeRoots": [
-      "./src/types",
-      "./node_modules/@types",
-      "./node_modules/cli-table3",
+      "src/types",
+      "node_modules/@types",
     ],
     "paths": {
       "@/*": [
