@@ -32,7 +32,7 @@ class CommandLine {
 
   run() {
     clear();
-    console.log(chalk.red(figlet.textSync('fanswoo-cli')));
+    console.log(chalk.red(figlet.textSync('fanswoo')));
 
     if (this.options.src && this.options.dist && this.options.name) {
       const dependenceClone = new DependenceClone({

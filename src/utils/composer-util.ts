@@ -3,9 +3,6 @@ import PackageUtil from '@/utils/package-util';
 import {
   IPackageRepository,
   IComposerPackageLockName,
-  // IPackagistSource,
-  // IPathSource,
-  // IGithubSource,
 } from '@/commands/contracts/package';
 
 export default class ComposerUtil {
@@ -103,15 +100,15 @@ export default class ComposerUtil {
     return false;
   }
 
-  static update(targetPackages: IPackageRepository[]) {
-    if (targetPackages.length === 0) {
-      execSync('composer update');
-    } else {
-      targetPackages.forEach(() => {
-        execSync('composer update packageName');
-      });
-    }
+  // static update(targetPackages: IPackageRepository[]) {
+  //   if (targetPackages.length === 0) {
+  //     execSync('composer update');
+  //   } else {
+  //     targetPackages.forEach((packageName) => {
+  //       execSync(`composer update ${packageName.name}`);
+  //     });
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 }

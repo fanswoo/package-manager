@@ -31,7 +31,7 @@ class CommandLine {
 
   run() {
     clear();
-    console.log(chalk.red(figlet.textSync('fanswoo-cli')));
+    console.log(chalk.red(figlet.textSync('fanswoo')));
 
     if (this.options.name && this.options.dist) {
       const dependenceRemove = new DependenceRemove({

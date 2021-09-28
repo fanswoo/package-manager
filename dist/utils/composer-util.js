@@ -63,17 +63,6 @@ class ComposerUtil {
         }
         return false;
     }
-    static update(targetPackages) {
-        if (targetPackages.length === 0) {
-            (0, child_process_1.execSync)('composer update');
-        }
-        else {
-            targetPackages.forEach(() => {
-                (0, child_process_1.execSync)('composer update packageName');
-            });
-        }
-        return true;
-    }
 }
 exports.default = ComposerUtil;
 //# sourceMappingURL=composer-util.js.map

@@ -23,7 +23,7 @@ class CommandLine {
 
   constructor() {
     clear();
-    console.log(chalk.red(figlet.textSync('fanswoo-cli')));
+    console.log(chalk.red(figlet.textSync('fanswoo')));
 
     this.commander = new Command();
     this.commander
@@ -37,13 +37,13 @@ class CommandLine {
   }
 
   static showTable() {
-    console.log('\n 目前的套件來源位置：');
+    console.log('\n Package list:');
 
     const packageList = PackageUtil.getPackageList();
 
     const table = new CliTable3({
-      head: ['platform', 'package name', 'source type'],
-      // colWidths: [100, 200],
+      head: ['platform', 'package name', 'source'],
+      colWidths: [10, 20, 11],
     });
 
     packageList.forEach((item) => {
@@ -71,7 +71,7 @@ class CommandLine {
       {
         type: 'list',
         name: 'platform',
-        message: '請輸入需要變更套件來源的套件管理平台名稱：',
+        message: 'Please enter the name of the package platform:',
         choices: ['composer', 'npm'],
       },
     ]);
@@ -89,7 +89,7 @@ class CommandLine {
       {
         type: 'list',
         name: 'packageName',
-        message: `請輸入 ${this.options.platform} 需要變更套件來源的套件名稱：`,
+        message: `Please enter the package name of ${this.options.platform}:`,
         choices: packageNames,
       },
     ]);
@@ -101,16 +101,16 @@ class CommandLine {
         (item) => this.options.packageName === item.name,
       )!.sources;
 
-    let currentPackageType = '';
+    let currentPackageSource = '';
     const sourceChoices: string[] = [];
     switch (this.options.platform) {
       case 'composer': {
-        currentPackageType = ComposerUtil.getPackageType(
+        currentPackageSource = ComposerUtil.getPackageType(
           this.options.packageName,
         );
 
         repositorieSources
-          .filter((item) => item.source !== currentPackageType)
+          .filter((item) => item.source !== currentPackageSource)
           .forEach((item) => {
             sourceChoices.push(item.source);
           });
@@ -118,12 +118,12 @@ class CommandLine {
         break;
       }
       case 'npm': {
-        currentPackageType = NpmUtil.getPackageType(
+        currentPackageSource = NpmUtil.getPackageType(
           this.options.packageName,
         );
 
         repositorieSources
-          .filter((item) => item.source !== currentPackageType)
+          .filter((item) => item.source !== currentPackageSource)
           .forEach((item) => {
             sourceChoices.push(item.source);
           });
@@ -131,7 +131,7 @@ class CommandLine {
         break;
       }
       default: {
-        throw new Error('必須選擇正確的套件');
+        throw new Error('Please enter correct package name');
       }
     }
 
@@ -140,31 +140,40 @@ class CommandLine {
         {
           type: 'list',
           name: 'source',
-          message: '請輸入應改為哪一種套件來源：',
+          message: `Please enter the source type of ${this.options.platform} ${this.options.packageName}:`,
           choices: sourceChoices,
         },
       ]);
       this.options.source = answer.source;
     } else {
+      let eitherPackageSource;
+
+      sourceChoices.forEach((item) => {
+        if (item !== currentPackageSource) {
+          eitherPackageSource = item;
+        }
+      });
+
+      if (!eitherPackageSource) {
+        throw new Error('Missing parameter "--source"');
+      }
+
       answer = await inquirer.prompt([
         {
           type: 'confirm',
           name: 'source',
-          message: `是否將套件來源改為：${currentPackageType}`,
+          message: `Are you sure change ${this.options.platform} ${this.options.packageName} source type to "${eitherPackageSource}"`,
           default: false,
         },
       ]);
 
       if (answer.source) {
-        this.options.source = currentPackageType;
+        this.options.source = eitherPackageSource;
       } else {
-        console.log('%c cancel this command.', 'color: yellow');
+        console.log('%c You canceled the command.', 'color: yellow;');
         process.exit();
       }
     }
-
-    console.log(this.options);
-    process.exit();
 
     this.callPackageSource();
   }
@@ -177,14 +186,18 @@ class CommandLine {
     );
 
     if (packageSource.isPackageTypeEqual()) {
-      console.log("you can't change package to the same type.");
+      console.log(
+        "%c You can't change package to the same source type.",
+        'color: red;',
+      );
       process.exit();
     }
 
     packageSource.changeType();
 
     console.log(
-      `成功將 ${this.options.platform} 套件管理平台內的 ${this.options.packageName} 套件來源變更為 "${this.options.source}"`,
+      `%c You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`,
+      'color: green;',
     );
   }
 }

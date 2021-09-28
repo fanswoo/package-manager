@@ -5,6 +5,7 @@ const child_process_1 = require("child_process");
 const package_util_1 = (0, tslib_1.__importDefault)(require("@/utils/package-util"));
 const composer_util_1 = (0, tslib_1.__importDefault)(require("@/utils/composer-util"));
 const npm_util_1 = (0, tslib_1.__importDefault)(require("@/utils/npm-util"));
+const dependence_clone_1 = (0, tslib_1.__importDefault)(require("@/commands/dependence-clone"));
 class PackageManager {
     constructor(platform, packageName, source) {
         this.platform = platform;
@@ -12,7 +13,7 @@ class PackageManager {
         this.source = source;
         this.dev = false;
         if (!['composer', 'npm'].includes(platform)) {
-            throw new Error('本功能僅支持 compose 和 npm 套件管理平台');
+            throw new Error('This command only supports composer and npm.');
         }
         this.platform = platform;
         this.packageName = packageName;
@@ -43,7 +44,7 @@ class PackageManager {
                 }
                 break;
             default:
-                throw new Error('本功能僅支持 compose 和 npm 套件管理平台');
+                throw new Error('This command only supports composer and npm.');
         }
         return false;
     }
@@ -70,7 +71,7 @@ class PackageManager {
                     (0, child_process_1.execSync)(`npm install --save-dev ${this.packageName} ${url}${branch}`);
                     break;
                 }
-                (0, child_process_1.execSync)('npm install {this.packageName} {url}');
+                (0, child_process_1.execSync)(`npm install ${this.packageName} ${url}`);
                 break;
             }
             case 'packagist': {
@@ -88,6 +89,18 @@ class PackageManager {
                 const url = `file:${this.packageSource.path}`;
                 if (this.dev) {
                     (0, child_process_1.execSync)(`npm install --save-dev ${this.packageName} ${url}`);
+                    const { platforms } = package_util_1.default.getConfig();
+                    const { dependenceDistDirectory, dependenceNamespace } = platforms.find((item) => item.name === 'npm');
+                    const newDependencePackageName = this.packageName
+                        .replace(/@/g, '')
+                        .replace(/\//g, '-');
+                    const dependenceClone = new dependence_clone_1.default({
+                        src: this.packageSource.path,
+                        dist: `${dependenceDistDirectory}/${newDependencePackageName}`,
+                        name: `@${dependenceNamespace}/${newDependencePackageName}`,
+                    });
+                    dependenceClone.run();
+                    (0, child_process_1.execSync)(`npm install --save-dev ${this.packageName} ${url}`);
                     break;
                 }
                 (0, child_process_1.execSync)(`npm install ${this.packageName} ${url}`);
@@ -98,7 +111,7 @@ class PackageManager {
         }
     }
     changeTypeByComposer() {
-        (0, child_process_1.execSync)('composer remove {this.packageName}');
+        (0, child_process_1.execSync)(`composer remove ${this.packageName}`);
         switch (this.source) {
             case 'github': {
                 this.packageSource = this.packageSource;

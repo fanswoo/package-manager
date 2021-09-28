@@ -2,6 +2,8 @@ import { execSync } from 'child_process';
 import PackageUtil from '@/utils/package-util';
 import ComposerUtil from '@/utils/composer-util';
 import NpmUtil from '@/utils/npm-util';
+import DependenceClone from '@/commands/dependence-clone';
+import DependenceRemove from '@/commands/dependence-remove';
 import {
   IPackagistSource,
   IGithubSource,
@@ -22,7 +24,7 @@ export default class PackageManager {
     protected source: string,
   ) {
     if (!['composer', 'npm'].includes(platform)) {
-      throw new Error('本功能僅支持 compose 和 npm 套件管理平台');
+      throw new Error('This command only supports composer and npm.');
     }
 
     this.platform = platform;
@@ -69,7 +71,9 @@ export default class PackageManager {
         }
         break;
       default:
-        throw new Error('本功能僅支持 compose 和 npm 套件管理平台');
+        throw new Error(
+          'This command only supports composer and npm.',
+        );
     }
 
     return false;
@@ -104,7 +108,7 @@ export default class PackageManager {
           break;
         }
 
-        execSync('npm install {this.packageName} {url}');
+        execSync(`npm install ${this.packageName} ${url}`);
         break;
       }
       case 'packagist': {
@@ -122,8 +126,8 @@ export default class PackageManager {
         break;
       }
       case 'path': {
-        this.packageSource = this.packageSource as IPathSource;
-        const url = `file:${this.packageSource.path}`;
+        const packageSource = this.packageSource as IPathSource;
+        const url = `file:${packageSource.path}`;
 
         if (this.dev) {
           execSync(
@@ -138,10 +142,54 @@ export default class PackageManager {
       default:
         break;
     }
+
+    this.handleDependence();
+  }
+
+  protected handleDependence() {
+    const {
+      dependenceDistDirectory,
+      dependenceNamespace,
+      newDependencePackageName,
+    } = this.getDependenceData();
+
+    if (this.source === 'path') {
+      const packageSource = this.packageSource as IPathSource;
+      const url = `file:${packageSource.path}`;
+
+      const dependenceClone = new DependenceClone({
+        src: packageSource.path,
+        dist: `${dependenceDistDirectory}/${newDependencePackageName}`,
+        name: `@${dependenceNamespace}/${newDependencePackageName}`,
+      });
+      dependenceClone.run();
+
+      execSync(`npm install --save-dev ${this.packageName} ${url}`);
+    } else {
+      execSync(
+        `npm uninstall @${dependenceNamespace}/${newDependencePackageName}`,
+      );
+    }
+  }
+
+  protected getDependenceData() {
+    const { platforms } = PackageUtil.getConfig();
+    const { dependenceDistDirectory, dependenceNamespace } =
+      platforms.find((item) => item.name === 'npm')!;
+
+    const newDependencePackageName = this.packageName
+      .replace(/@/g, '')
+      .replace(/\//g, '-');
+
+    return {
+      dependenceDistDirectory,
+      dependenceNamespace,
+      newDependencePackageName,
+    };
   }
 
   protected changeTypeByComposer() {
-    execSync('composer remove {this.packageName}');
+    execSync(`composer remove ${this.packageName}`);
 
     switch (this.source) {
       case 'github': {
