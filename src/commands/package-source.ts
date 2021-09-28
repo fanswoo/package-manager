@@ -155,7 +155,6 @@ export default class PackageManager {
 
     if (this.source === 'path') {
       const packageSource = this.packageSource as IPathSource;
-      const url = `file:${packageSource.path}`;
 
       const dependenceClone = new DependenceClone({
         src: packageSource.path,
@@ -163,12 +162,12 @@ export default class PackageManager {
         name: `@${dependenceNamespace}/${newDependencePackageName}`,
       });
       dependenceClone.run();
-
-      execSync(`npm install --save-dev ${this.packageName} ${url}`);
     } else {
-      execSync(
-        `npm uninstall @${dependenceNamespace}/${newDependencePackageName}`,
-      );
+      const dependenceRemove = new DependenceRemove({
+        dist: `${dependenceDistDirectory}/${newDependencePackageName}`,
+        name: `@${dependenceNamespace}/${newDependencePackageName}`,
+      });
+      dependenceRemove.run();
     }
   }
 
