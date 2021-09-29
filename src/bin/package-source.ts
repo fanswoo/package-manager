@@ -5,18 +5,23 @@ import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
 import { Command } from 'commander';
+import PackageUtil from '@/utils/package-util';
 import NpmPackageSource from '@/package-source/npm-package-source';
 import ComposerPackageSource from '@/package-source/composer-package-source';
 import PackageSourceAsker from '@/package-source/package-source-asker';
+import { IPackageConfig } from '@/package-source/contracts/package';
 
 class CommandLine {
   protected options: {
     platform: string;
     packageName: string;
     source: string;
+    configPath: string;
   };
 
   protected commander: any;
+
+  protected config: IPackageConfig;
 
   constructor() {
     clear();
@@ -25,12 +30,17 @@ class CommandLine {
     this.commander = new Command();
     this.commander
       .description('manage package')
-      .option('-p, --platform <name>', 'platform')
-      .option('-pkg, --package-name <name>', 'package')
-      .option('-s, --source <source type>', 'source')
+      .option('-p, --platform <name>', 'input platform name')
+      .option('-pkg, --package-name <name>', 'input package name')
+      .option('-s, --source <source type>', 'input source type')
+      .option('-c, --config-path <config path>', 'input config path')
       .parse();
 
     this.options = this.commander.opts();
+
+    this.config = PackageUtil.getConfig({
+      configPath: this.options.configPath,
+    });
   }
 
   async run(): Promise<boolean> {
@@ -45,7 +55,7 @@ class CommandLine {
 
     this.commander.outputHelp();
 
-    const packageSourceAsker = new PackageSourceAsker();
+    const packageSourceAsker = new PackageSourceAsker(this.config);
     await packageSourceAsker.ask();
 
     const options = packageSourceAsker.getOptions();
@@ -66,6 +76,7 @@ class CommandLine {
     switch (this.options.platform) {
       case 'npm': {
         packageSource = new NpmPackageSource(
+          this.config,
           this.options.packageName,
           this.options.source,
         );
@@ -73,6 +84,7 @@ class CommandLine {
       }
       case 'composer': {
         packageSource = new ComposerPackageSource(
+          this.config,
           this.options.packageName,
           this.options.source,
         );

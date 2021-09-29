@@ -7,7 +7,7 @@ const chalk_1 = (0, tslib_1.__importDefault)(require("chalk"));
 const clear_1 = (0, tslib_1.__importDefault)(require("clear"));
 const figlet_1 = (0, tslib_1.__importDefault)(require("figlet"));
 const commander_1 = require("commander");
-const dependence_clone_1 = (0, tslib_1.__importDefault)(require("@/commands/dependence-clone"));
+const dependence_clone_1 = (0, tslib_1.__importDefault)(require("@/npm-dependence/dependence-clone"));
 class CommandLine {
     constructor() {
         this.commander = new commander_1.Command();

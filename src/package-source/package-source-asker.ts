@@ -4,6 +4,7 @@ import PackageUtil from '@/utils/package-util';
 import ComposerUtil from '@/utils/composer-util';
 import NpmUtil from '@/utils/npm-util';
 import {
+  IPackageConfig,
   IPackagistSource,
   IGithubSource,
   IPathSource,
@@ -20,23 +21,21 @@ export default class PackageSourceAsker {
     source: '',
   };
 
-  protected config;
-
-  constructor() {
-    this.config = PackageUtil.getConfig();
+  constructor(protected config: IPackageConfig) {
+    this.config = config;
   }
 
   async ask() {
-    PackageSourceAsker.showTable();
+    this.showTable();
     await this.askPlatform();
     await this.askPackageName();
     await this.askSource();
   }
 
-  static showTable() {
+  showTable() {
     console.log('\n Package list:');
 
-    const packageList = PackageUtil.getPackageList();
+    const packageList = PackageUtil.getPackageList(this.config);
 
     const table = new CliTable3({
       head: ['platform', 'package name', 'source'],

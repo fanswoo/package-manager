@@ -1,6 +1,8 @@
 import { execSync } from 'child_process';
-import PackageUtil from '@/utils/package-util';
-import { INpmPackageLockName } from '@/package-source/contracts/package';
+import {
+  IPackageConfig,
+  INpmPackageLockName,
+} from '@/package-source/contracts/package';
 
 export default class NpmUtil {
   static getPackages() {
@@ -9,10 +11,10 @@ export default class NpmUtil {
     return JSON.parse(packageExec);
   }
 
-  static getPackageList() {
+  static getPackageList(config: IPackageConfig) {
     const allPackages = NpmUtil.getPackages();
 
-    const packages = PackageUtil.getConfig().platforms.filter(
+    const packages = config.platforms.filter(
       (item) => item.name === 'npm',
     );
 
@@ -55,16 +57,6 @@ export default class NpmUtil {
   }
 
   static getPackageType(inputPackage: string): string {
-    // const packages = PackageUtil.getConfig().update.packages;
-
-    // let dev = false;
-    // if (
-    //   packages.npm[inputPackage].dev &&
-    //   packages.npm[inputPackage].dev
-    // ) {
-    //   dev = true;
-    // }
-
     const resolved = NpmUtil.getPackageResolved(inputPackage);
 
     return NpmUtil.resolvedToSourceType(resolved);

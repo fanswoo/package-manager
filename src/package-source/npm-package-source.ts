@@ -1,8 +1,7 @@
 import { execSync } from 'child_process';
-import PackageUtil from '@/utils/package-util';
 import PackageSource from '@/package-source/contracts/package-source';
-import DependenceClone from '@/package-source/dependence-clone';
-import DependenceRemove from '@/package-source/dependence-remove';
+import DependenceClone from '@/npm-dependence/dependence-clone';
+import DependenceRemove from '@/npm-dependence/dependence-remove';
 import NpmUtil from '@/utils/npm-util';
 import {
   IPackagistSource,
@@ -105,9 +104,8 @@ export default class NpmPackageSource extends PackageSource {
   }
 
   protected getDependenceData() {
-    const { platforms } = PackageUtil.getConfig();
     const { dependenceDistDirectory, dependenceNamespace } =
-      platforms.find((item) => item.name === 'npm')!;
+      this.config.platforms.find((item) => item.name === 'npm')!;
 
     const newDependencePackageName = this.packageName
       .replace(/@/g, '')

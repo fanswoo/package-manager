@@ -3,17 +3,20 @@ import NpmUtil from '@/utils/npm-util';
 import { IPackageConfig } from '@/package-source/contracts/package';
 
 export default class PackageUtil {
-  static getPackageList() {
-    const composerPackageList = ComposerUtil.getPackageList();
-    const npmPackageList = NpmUtil.getPackageList();
+  static getPackageList(config: IPackageConfig) {
+    const composerPackageList = ComposerUtil.getPackageList(config);
+    const npmPackageList = NpmUtil.getPackageList(config);
 
     return composerPackageList.concat(npmPackageList);
   }
 
-  static getConfig(): IPackageConfig {
-    // eslint-disable-next-line import/no-dynamic-require, global-require
-    const packageConfig = require(`${process.cwd()}/package-manager.config.js`);
+  static getConfig(arg: { configPath: string }): IPackageConfig {
+    if (arg?.configPath) {
+      // eslint-disable-next-line import/no-dynamic-require, global-require
+      return require(arg.configPath);
+    }
 
-    return packageConfig;
+    // eslint-disable-next-line import/no-dynamic-require, global-require
+    return require(`${process.cwd()}/package-manager.config.js`);
   }
 }

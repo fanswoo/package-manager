@@ -1,5 +1,5 @@
-import PackageUtil from '@/utils/package-util';
 import {
+  IPackageConfig,
   IPackagistSource,
   IGithubSource,
   IPathSource,
@@ -16,6 +16,7 @@ export default abstract class PackageSource {
     | IPathSource;
 
   constructor(
+    protected config: IPackageConfig,
     protected packageName: string,
     protected source: string,
   ) {
@@ -26,9 +27,7 @@ export default abstract class PackageSource {
   }
 
   protected initPackageSource() {
-    const { platforms } = PackageUtil.getConfig();
-
-    const packageRepository = platforms
+    const packageRepository = this.config.platforms
       .find((item) => this.platform === item.name)!
       .packages.find((item) => this.packageName === item.name)!;
 

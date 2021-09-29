@@ -1,13 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
 const child_process_1 = require("child_process");
-const package_util_1 = (0, tslib_1.__importDefault)(require("@/utils/package-util"));
 class ComposerUtil {
-    static getPackageList() {
+    static getPackageList(config) {
         const packageExec = (0, child_process_1.execSync)('composer config repositories').toString();
         const allPackageNames = JSON.parse(packageExec);
-        const packages = package_util_1.default.getConfig().platforms.filter((item) => item.name === 'composer');
+        const packages = config.platforms.filter((item) => item.name === 'composer');
         const outputPackage = [];
         packages
             .find((item) => item.name === 'composer')

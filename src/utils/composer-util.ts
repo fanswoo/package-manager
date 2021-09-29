@@ -1,15 +1,17 @@
 import { execSync } from 'child_process';
-import PackageUtil from '@/utils/package-util';
-import { IComposerPackageLockName } from '@/package-source/contracts/package';
+import {
+  IPackageConfig,
+  IComposerPackageLockName,
+} from '@/package-source/contracts/package';
 
 export default class ComposerUtil {
-  static getPackageList() {
+  static getPackageList(config: IPackageConfig) {
     const packageExec = execSync(
       'composer config repositories',
     ).toString();
 
     const allPackageNames = JSON.parse(packageExec);
-    const packages = PackageUtil.getConfig().platforms.filter(
+    const packages = config.platforms.filter(
       (item) => item.name === 'composer',
     );
 
