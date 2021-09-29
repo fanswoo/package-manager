@@ -49,6 +49,6 @@
   },
   "homepage": "https://github.com/fanswoo/package-manager",
   "_moduleAliases": {
-    "@": "./dist"
+    "@": "dist"
   }
 }
