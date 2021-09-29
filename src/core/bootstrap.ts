@@ -1,4 +1,6 @@
+import path from 'path';
 import dotenv from 'dotenv';
+import moduleAlias from 'module-alias';
 import { Command } from 'commander';
 
 class Bootstrap {
@@ -21,6 +23,7 @@ class Bootstrap {
 
     if (!options.disableModuleAlias) {
       require('module-alias/register'); // eslint-disable-line global-require
+      moduleAlias.addAlias('@', path.join(__dirname, '../'));
     }
 
     if (env) {

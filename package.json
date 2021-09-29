@@ -34,6 +34,7 @@
     "@types/clear": "^0.1.2",
     "@types/figlet": "^1.5.4",
     "@types/inquirer": "^8.1.2",
+    "@types/module-alias": "^2.0.1",
     "@types/node": "^16.9.6",
     "nodemon": "^2.0.13",
     "tsconfig-paths": "^3.11.0",
@@ -47,8 +48,5 @@
   "bugs": {
     "url": "https://github.com/fanswoo/package-manager/issues"
   },
-  "homepage": "https://github.com/fanswoo/package-manager",
-  "_moduleAliases": {
-    "@": "dist"
-  }
+  "homepage": "https://github.com/fanswoo/package-manager"
 }
