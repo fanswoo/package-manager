@@ -20,6 +20,8 @@ export default class ComposerPackageSource extends PackageSource {
   }
 
   public changeType(): boolean {
+    this.initPackageSource();
+
     try {
       execSync(`composer remove ${this.packageName}`);
     } catch (error) {

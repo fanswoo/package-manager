@@ -6,6 +6,7 @@ require("../core/bootstrap");
 const chalk_1 = (0, tslib_1.__importDefault)(require("chalk"));
 const clear_1 = (0, tslib_1.__importDefault)(require("clear"));
 const figlet_1 = (0, tslib_1.__importDefault)(require("figlet"));
+const colors_1 = (0, tslib_1.__importDefault)(require("colors"));
 const commander_1 = require("commander");
 const package_util_1 = (0, tslib_1.__importDefault)(require("@/utils/package-util"));
 const npm_package_source_1 = (0, tslib_1.__importDefault)(require("@/package-source/npm-package-source"));
@@ -24,12 +25,12 @@ class CommandLine {
             .option('-c, --config-path <config path>', 'input config path')
             .parse();
         this.options = this.commander.opts();
-        this.config = package_util_1.default.getConfig({
-            configPath: this.options.configPath,
-        });
     }
     run() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
+            this.config = yield package_util_1.default.getConfig({
+                configPath: this.options.configPath,
+            });
             if (this.options.platform &&
                 this.options.packageName &&
                 this.options.source) {
@@ -65,11 +66,11 @@ class CommandLine {
                 throw new Error('Error!');
         }
         if (packageSource.isPackageTypeEqual()) {
-            console.log("%c You can't change package to the same source type.", 'color: red;');
+            console.log(colors_1.default.yellow("You can't change package to the same source type."));
             process.exit();
         }
         packageSource.changeType();
-        console.log(`%c You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`, 'color: green;');
+        console.log(colors_1.default.green(`You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`));
     }
 }
 const commandLine = new CommandLine();

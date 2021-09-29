@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tslib_1 = require("tslib");
 const inquirer_1 = (0, tslib_1.__importDefault)(require("inquirer"));
+const colors_1 = (0, tslib_1.__importDefault)(require("colors"));
 const cli_table3_1 = (0, tslib_1.__importDefault)(require("cli-table3"));
 const package_util_1 = (0, tslib_1.__importDefault)(require("@/utils/package-util"));
 const composer_util_1 = (0, tslib_1.__importDefault)(require("@/utils/composer-util"));
@@ -110,7 +111,7 @@ class PackageSourceAsker {
                     this.options.source = eitherPackageSource;
                 }
                 else {
-                    console.log('%c You canceled the command.', 'color: yellow;');
+                    console.log(colors_1.default.yellow('You canceled the command.'));
                     process.exit();
                 }
             }

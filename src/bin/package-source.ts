@@ -4,6 +4,7 @@ import '../core/bootstrap';
 import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
+import colors from 'colors';
 import { Command } from 'commander';
 import PackageUtil from '@/utils/package-util';
 import NpmPackageSource from '@/package-source/npm-package-source';
@@ -21,7 +22,7 @@ class CommandLine {
 
   protected commander: any;
 
-  protected config: IPackageConfig;
+  protected config!: IPackageConfig;
 
   constructor() {
     clear();
@@ -37,13 +38,13 @@ class CommandLine {
       .parse();
 
     this.options = this.commander.opts();
-
-    this.config = PackageUtil.getConfig({
-      configPath: this.options.configPath,
-    });
   }
 
   async run(): Promise<boolean> {
+    this.config = await PackageUtil.getConfig({
+      configPath: this.options.configPath,
+    });
+
     if (
       this.options.platform &&
       this.options.packageName &&
@@ -96,8 +97,9 @@ class CommandLine {
 
     if (packageSource.isPackageTypeEqual()) {
       console.log(
-        "%c You can't change package to the same source type.",
-        'color: red;',
+        colors.yellow(
+          "You can't change package to the same source type.",
+        ),
       );
       process.exit();
     }
@@ -105,8 +107,9 @@ class CommandLine {
     packageSource.changeType();
 
     console.log(
-      `%c You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`,
-      'color: green;',
+      colors.green(
+        `You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`,
+      ),
     );
   }
 }

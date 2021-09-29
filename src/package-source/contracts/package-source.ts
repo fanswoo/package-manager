@@ -20,10 +20,9 @@ export default abstract class PackageSource {
     protected packageName: string,
     protected source: string,
   ) {
+    this.config = config;
     this.packageName = packageName;
     this.source = source;
-
-    this.initPackageSource();
   }
 
   protected initPackageSource() {

@@ -21,6 +21,8 @@ export default class NpmPackageSource extends PackageSource {
   }
 
   public changeType(): boolean {
+    this.initPackageSource();
+
     switch (this.source) {
       case 'github': {
         this.packageSource = this.packageSource as IGithubSource;

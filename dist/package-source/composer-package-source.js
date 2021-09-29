@@ -16,6 +16,7 @@ class ComposerPackageSource extends package_source_1.default {
         return false;
     }
     changeType() {
+        this.initPackageSource();
         try {
             (0, child_process_1.execSync)(`composer remove ${this.packageName}`);
         }

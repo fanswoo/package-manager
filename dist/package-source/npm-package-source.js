@@ -18,6 +18,7 @@ class NpmPackageSource extends package_source_1.default {
         return false;
     }
     changeType() {
+        this.initPackageSource();
         switch (this.source) {
             case 'github': {
                 this.packageSource = this.packageSource;

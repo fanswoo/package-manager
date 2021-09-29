@@ -1,4 +1,5 @@
 import fs from 'fs';
+import colors from 'colors';
 import { execSync } from 'child_process';
 
 export default class DependenceRemove {
@@ -15,7 +16,7 @@ export default class DependenceRemove {
     this.uninstallDependencePackage();
     this.removeDependencePackage();
 
-    console.log('%c execution succeed', 'color: green;');
+    console.log(colors.green('execution succeed'));
   }
 
   protected removeDependencePackage() {

@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import colors from 'colors';
 import CliTable3 from 'cli-table3';
 import PackageUtil from '@/utils/package-util';
 import ComposerUtil from '@/utils/composer-util';
@@ -129,7 +130,7 @@ export default class PackageSourceAsker {
       if (answer.source) {
         this.options.source = eitherPackageSource;
       } else {
-        console.log('%c You canceled the command.', 'color: yellow;');
+        console.log(colors.yellow('You canceled the command.'));
         process.exit();
       }
     }

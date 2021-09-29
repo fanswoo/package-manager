@@ -1,4 +1,5 @@
 import fs from 'fs';
+import colors from 'colors';
 import { execSync } from 'child_process';
 
 export default class DependenceClone {
@@ -18,7 +19,7 @@ export default class DependenceClone {
     this.buildDependencePackage();
     this.installDependencePackage();
 
-    console.log('%c execution succeed', 'color: green;');
+    console.log(colors.green('execution succeed'));
   }
 
   protected buildDependencePackage() {

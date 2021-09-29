@@ -6,9 +6,9 @@ class PackageSource {
         this.packageName = packageName;
         this.source = source;
         this.dev = false;
+        this.config = config;
         this.packageName = packageName;
         this.source = source;
-        this.initPackageSource();
     }
     initPackageSource() {
         const packageRepository = this.config.platforms
