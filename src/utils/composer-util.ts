@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import PackageUtil from '@/utils/package-util';
-import { IComposerPackageLockName } from '@/commands/contracts/package';
+import { IComposerPackageLockName } from '@/package-source/contracts/package';
 
 export default class ComposerUtil {
   static getPackageList() {

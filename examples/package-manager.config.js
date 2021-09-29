@@ -22,7 +22,7 @@ module.exports = {
     },
     {
       name: 'npm',
-      dependenceNamespace: '@fanswoo-dependence',
+      dependenceNamespace: 'fanswoo-package-manager-dependence',
       dependenceDistDirectory: 'storage/framework/npm-dependence',
       packages: [
         {

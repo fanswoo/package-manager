@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
 import { Command } from 'commander';
-import DependenceClone from '@/commands/dependence-clone';
+import DependenceClone from '@/npm-dependence/dependence-clone';
 
 class CommandLine {
   protected options: { src: string; dist: string; name: string };

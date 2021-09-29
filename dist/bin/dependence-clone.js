@@ -21,7 +21,7 @@ class CommandLine {
     }
     run() {
         (0, clear_1.default)();
-        console.log(chalk_1.default.red(figlet_1.default.textSync('fanswoo-cli')));
+        console.log(chalk_1.default.red(figlet_1.default.textSync('fanswoo')));
         if (this.options.src && this.options.dist && this.options.name) {
             const dependenceClone = new dependence_clone_1.default({
                 src: this.options.src,

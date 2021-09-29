@@ -31,13 +31,12 @@ class CommandLine {
         const packageList = package_util_1.default.getPackageList();
         const table = new cli_table3_1.default({
             head: ['platform', 'package name', 'source'],
-            colWidths: [10, 20, 8],
+            colWidths: [10, 20, 11],
         });
         packageList.forEach((item) => {
             table.push(item);
         });
         console.log(table.toString());
-        console.log('\n');
     }
     run() {
         return (0, tslib_1.__awaiter)(this, void 0, void 0, function* () {
@@ -134,7 +133,7 @@ class CommandLine {
                     this.options.source = eitherPackageSource;
                 }
                 else {
-                    console.log('%c You canceled the command.', 'color: yellow');
+                    console.log('%c You canceled the command.', 'color: yellow;');
                     process.exit();
                 }
             }
@@ -144,11 +143,11 @@ class CommandLine {
     callPackageSource() {
         const packageSource = new package_source_1.default(this.options.platform, this.options.packageName, this.options.source);
         if (packageSource.isPackageTypeEqual()) {
-            console.log("%c You can't change package to the same source type.", 'color: red');
+            console.log("%c You can't change package to the same source type.", 'color: red;');
             process.exit();
         }
         packageSource.changeType();
-        console.log(`%c You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`, 'color: green');
+        console.log(`%c You have changed ${this.options.platform} ${this.options.packageName} source type to "${this.options.source}"`, 'color: green;');
     }
 }
 const commandLine = new CommandLine();

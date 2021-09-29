@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import PackageUtil from '@/utils/package-util';
-import { INpmPackageLockName } from '@/commands/contracts/package';
+import { INpmPackageLockName } from '@/package-source/contracts/package';
 
 export default class NpmUtil {
   static getPackages() {

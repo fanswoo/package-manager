@@ -6,6 +6,7 @@ const package_util_1 = (0, tslib_1.__importDefault)(require("@/utils/package-uti
 const composer_util_1 = (0, tslib_1.__importDefault)(require("@/utils/composer-util"));
 const npm_util_1 = (0, tslib_1.__importDefault)(require("@/utils/npm-util"));
 const dependence_clone_1 = (0, tslib_1.__importDefault)(require("@/commands/dependence-clone"));
+const dependence_remove_1 = (0, tslib_1.__importDefault)(require("@/commands/dependence-remove"));
 class PackageManager {
     constructor(platform, packageName, source) {
         this.platform = platform;
@@ -85,21 +86,9 @@ class PackageManager {
                 break;
             }
             case 'path': {
-                this.packageSource = this.packageSource;
-                const url = `file:${this.packageSource.path}`;
+                const packageSource = this.packageSource;
+                const url = `file:${packageSource.path}`;
                 if (this.dev) {
-                    (0, child_process_1.execSync)(`npm install --save-dev ${this.packageName} ${url}`);
-                    const { platforms } = package_util_1.default.getConfig();
-                    const { dependenceDistDirectory, dependenceNamespace } = platforms.find((item) => item.name === 'npm');
-                    const newDependencePackageName = this.packageName
-                        .replace(/@/g, '')
-                        .replace(/\//g, '-');
-                    const dependenceClone = new dependence_clone_1.default({
-                        src: this.packageSource.path,
-                        dist: `${dependenceDistDirectory}/${newDependencePackageName}`,
-                        name: `@${dependenceNamespace}/${newDependencePackageName}`,
-                    });
-                    dependenceClone.run();
                     (0, child_process_1.execSync)(`npm install --save-dev ${this.packageName} ${url}`);
                     break;
                 }
@@ -109,21 +98,62 @@ class PackageManager {
             default:
                 break;
         }
+        this.handleDependence();
+    }
+    handleDependence() {
+        const { dependenceDistDirectory, dependenceNamespace, newDependencePackageName, } = this.getDependenceData();
+        if (this.source === 'path') {
+            const packageSource = this.packageSource;
+            const dependenceClone = new dependence_clone_1.default({
+                src: packageSource.path,
+                dist: `${dependenceDistDirectory}/${newDependencePackageName}`,
+                name: `@${dependenceNamespace}/${newDependencePackageName}`,
+            });
+            dependenceClone.run();
+        }
+        else {
+            const dependenceRemove = new dependence_remove_1.default({
+                dist: `${dependenceDistDirectory}/${newDependencePackageName}`,
+                name: `@${dependenceNamespace}/${newDependencePackageName}`,
+            });
+            dependenceRemove.run();
+        }
+    }
+    getDependenceData() {
+        const { platforms } = package_util_1.default.getConfig();
+        const { dependenceDistDirectory, dependenceNamespace } = platforms.find((item) => item.name === 'npm');
+        const newDependencePackageName = this.packageName
+            .replace(/@/g, '')
+            .replace(/\//g, '-');
+        return {
+            dependenceDistDirectory,
+            dependenceNamespace,
+            newDependencePackageName,
+        };
     }
     changeTypeByComposer() {
-        (0, child_process_1.execSync)(`composer remove ${this.packageName}`);
+        try {
+            (0, child_process_1.execSync)(`composer remove ${this.packageName}`);
+        }
+        catch (error) {
+            let errorMessage = 'error';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            }
+            console.log(errorMessage);
+        }
         switch (this.source) {
             case 'github': {
-                this.packageSource = this.packageSource;
-                const url = `git@github.com:${this.packageSource.name}.git`;
+                const packageSource = this.packageSource;
+                const url = `git@github.com:${packageSource.name}.git`;
                 (0, child_process_1.execSync)(`composer config repositories.${this.packageName} git ${url}`);
-                const version = `dev-${this.packageSource.branch}`;
+                const version = `dev-${packageSource.branch}`;
                 (0, child_process_1.execSync)(`composer require ${this.packageName}:${version}`);
                 break;
             }
             case 'path': {
-                this.packageSource = this.packageSource;
-                const url = this.packageSource.path;
+                const packageSource = this.packageSource;
+                const url = packageSource.path;
                 (0, child_process_1.execSync)(`composer config repositories.${this.packageName} path ${url}`);
                 (0, child_process_1.execSync)(`composer require ${this.packageName}`);
                 break;

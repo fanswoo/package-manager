@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import clear from 'clear';
 import figlet from 'figlet';
 import { Command } from 'commander';
-import DependenceRemove from '@/commands/dependence-remove';
+import DependenceRemove from '@/npm-dependence/dependence-remove';
 
 class CommandLine {
   protected options: { name: string; dist: string };

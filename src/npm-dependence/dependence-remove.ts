@@ -19,7 +19,7 @@ export default class DependenceRemove {
   }
 
   protected removeDependencePackage() {
-    fs.rmdirSync(`${process.cwd()}/${this.dist}`, {
+    fs.rmSync(`${process.cwd()}/${this.dist}`, {
       recursive: true,
     });
   }

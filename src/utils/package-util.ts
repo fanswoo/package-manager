@@ -1,6 +1,6 @@
 import ComposerUtil from '@/utils/composer-util';
 import NpmUtil from '@/utils/npm-util';
-import { IPackageConfig } from '@/commands/contracts/package';
+import { IPackageConfig } from '@/package-source/contracts/package';
 
 export default class PackageUtil {
   static getPackageList() {

@@ -14,7 +14,7 @@ class DependenceRemove {
         console.log('%c execution succeed', 'color: green;');
     }
     removeDependencePackage() {
-        fs_1.default.rmdirSync(`${process.cwd()}/${this.dist}`, {
+        fs_1.default.rmSync(`${process.cwd()}/${this.dist}`, {
             recursive: true,
         });
     }
