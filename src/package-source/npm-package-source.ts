@@ -40,7 +40,7 @@ export default class NpmPackageSource extends PackageSource {
           break;
         }
 
-        execSync(`npm install ${this.packageName} ${url}`);
+        execSync(`npm install ${this.packageName} ${url}${branch}`);
         break;
       }
       case 'packagist': {
